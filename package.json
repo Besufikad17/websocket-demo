@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx prisma generate && tsc",
     "dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\"",
-    "start": "node dist/index.js"
+    "start": "node ./dist/index.js"
   },
   "dependencies": {
     "@prisma/client": "^5.3.0",
