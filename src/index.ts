@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
 });
 
 server.listen(3000, () => {
-  console.log("websocket server running..");
+  console.log("websocket server running check the client in `http:\\localhost:3000`");
 });
 
 
