@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Websocket client</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+       .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center; 
+       }
+
+       .chat-container {
+          display: flex;
+          flex-direction: column;
+          width: 390px;
+       }
+
+       .chat-container div {
+         display: flex;
+         flex-direction: row;
+         text-align: left;
+         padding: 10px;
+       }
+
+       .chat-container div span {
+         margin-right: 10px;
+       }
+
+       .chat-container div span:first-child {
+         color: blue;
+       }
+
+       .chat-container div span:last-child {
+         color: red;
+         font-style: italic;
+       }
+
+       .form-components {
+         display: flex;
+         flex-direction: row;
+       }
+
+       .form-components textarea {
+         resize: none;
+       }
+
+       .form-components button {
+         height: 40px;
+       }
+    </style> 
+  </head>
+  <body>
+    <div class="container">
+     <h1>Websocket client</h1>
+     <div id="msgs"class="chat-container"></div>
+     <form id="form">
+       <div class="form-components"> 
+        <textarea id="input" rows="2" cols="40"></textarea>
+        <button type="submit">Send</button>
+       </div>
+     </form> 
+    </div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const messages = document.getElementById('msgs');
+    
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+
+    fetch("http://localhost:3000/messages", requestOptions)
+      .then(response => response.json())
+      .then((result) => {
+        result.map((msg) => {
+          const container = document.createElement('div');
+          const user = document.createElement('span');
+          const message = document.createElement('span');
+          const timestamp = document.createElement('span');
+           
+          user.textContent = `User${msg.socketId.substring(3)}:`;
+          message.textContent = `${msg.message}`;
+          timestamp.textContent = `${msg.sentAt.substring(msg.sentAt.indexOf('T') + 1, msg.sentAt.indexOf('.'))}`;
+
+          container.appendChild(user);
+          container.appendChild(message);
+          container.appendChild(timestamp);
+          
+          messages.appendChild(container);
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+      })
+      .catch(error => console.log('error', error)); 
+
+    form.addEventListener('submit', (e) => {
+      if(input.value) {
+        socket.emit('message', input.value);
+        input.value = '';
+      }
+    });
+  </script>
+</html>

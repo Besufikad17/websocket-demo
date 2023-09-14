@@ -10,10 +10,11 @@ const server = createServer(app);
 const io = new Server(server);
 const prisma = new PrismaClient();
 
+app.use(experss.static(join(__dirname, 'public')))
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.sendFile(join(__dirname + "/public/index.html"));
+  res.sendFile("index.html");
 });
 
 app.get("/messages", async(req, res) => {
